@@ -33,18 +33,24 @@ class DialogBox extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-          ElevatedButton(
-            onPressed: onSave,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade700,
-              elevation: 10,
-            ),
-            child: const Text(
-              'Save',
-              style: TextStyle(
-                fontSize: 35,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+          Transform.scale(
+            scale: 1.3,
+            child: ElevatedButton(
+              onPressed: controller.text.isEmpty ? onSave : onSave,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade700,
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

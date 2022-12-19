@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/storage.dart';
-import 'package:to_do_app/utils/dialog_box.dart';
-import 'package:to_do_app/utils/task_tile.dart';
+import 'package:to_do_app/dialog_box.dart';
+import 'package:to_do_app/task_tile.dart';
 import 'package:hive/hive.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,12 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void saveTask() {
-    setState(() {
-      storage.toDoList.add([taskController.text, false]);
-      taskController.clear();
-    });
-    storage.updateLocalStorage();
-    Navigator.pop(context);
+    if (taskController.text.isNotEmpty) {
+      setState(() {
+        storage.toDoList.add([taskController.text, false]);
+        taskController.clear();
+      });
+      storage.updateLocalStorage();
+      Navigator.pop(context);
+    }
   }
 
   void deleteTask(int index) {
