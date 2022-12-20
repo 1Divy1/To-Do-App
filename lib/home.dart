@@ -1,7 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do_app/storage.dart';
-import 'package:to_do_app/dialog_box.dart';
-import 'package:to_do_app/task_tile.dart';
+import 'package:ToDoBeta/storage.dart';
+import 'package:ToDoBeta/dialog_box.dart';
+import 'package:ToDoBeta/task_tile.dart';
 import 'package:hive/hive.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,12 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (box.get('ToDoList') != null) {
       storage.loadData();
-      print('to do light length: ${storage.toDoList.length}');
     }
   }
 
-  // changes checkbox' bool value to the opposite
-  // then updates the local storage value
   void checkBoxChanged(bool? value, int index) {
     setState(() {
       storage.toDoList[index][1] = !storage.toDoList[index][1];
@@ -41,6 +39,24 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) => DialogBox(
         controller: taskController,
         onSave: saveTask,
+      ),
+    );
+  }
+
+  void editTask() {
+    showDialog(
+      context: context,
+      builder: (context) => DialogBox(
+        controller: taskController,
+        onSave: () {
+          if (taskController.text.isNotEmpty) {
+            setState(() {
+              taskController.clear();
+            });
+            storage.updateLocalStorage();
+            Navigator.pop(context);
+          }
+        },
       ),
     );
   }
@@ -63,11 +79,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // TO DO
   void updateTask() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 87, 72, 202),
+        title: const Center(
+          child: Text(
+            'Tasks',
+            style: TextStyle(
+              fontSize: 35,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
       backgroundColor: const Color.fromARGB(255, 50, 43, 148),
       body: ListView.builder(
         itemCount: storage.toDoList.length,
@@ -76,20 +106,32 @@ class _HomeScreenState extends State<HomeScreen> {
             taskName: storage.toDoList[index][0],
             bTaskCompleted: storage.toDoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
-            deleteFunction: (p0) => deleteTask(index),
+            deleteFunction: (value) => deleteTask(index),
+            editTask: () => editTask(),
           );
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Transform.scale(
         scale: 1.2,
         child: FloatingActionButton(
           onPressed: createTask,
-          backgroundColor: Colors.yellow,
+          backgroundColor: Colors.yellowAccent,
           child: const Icon(
             Icons.add,
             color: Colors.black,
             size: 35,
           ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 10,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        color: Colors.white,
+        child: Container(
+          height: 45,
+          color: const Color.fromARGB(255, 87, 72, 202),
         ),
       ),
     );
