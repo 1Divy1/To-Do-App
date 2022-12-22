@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (box.get('ToDoList') != null) {
       storage.loadData();
-      print('to do light length: ${storage.toDoList.length}');
     }
   }
 
